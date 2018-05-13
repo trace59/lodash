@@ -682,6 +682,227 @@ var abandon599 = {
 		return object
 	},
 
+	forOwnRight: function forOwnRight (object, iteratee) {
+		var res = []
+		for (var key in object) {
+			if (object.hasOwnProperty(key)) {
+				res.unshift(key)
+			}
+		}
+		res.forEach(key => iteratee(Object[key], key, Object))
+		return object
+	},
+
+	functions: functions = object => {
+		var res = []
+		for (let key in object) {
+			if (object.hasOwnProperty(key)) {
+				res.push(key)
+			}
+		}
+		return res
+	},
+
+	functionsIn: functionsIn = object => {
+		var res = []
+		for (let key in object) {
+				res.push(key)
+		}
+		return res
+	},
+
+	has: has = (object, ...paths) => {
+		var paths = _.flattenDeep(paths.map(path => _.toPath(path)))
+		var obj = Object.assign({}, object)
+		for (let key of paths) {
+			if (obj.hasOwnProperty(key)) {
+				obj = obj[key]
+			} else {
+				return false
+			}
+		}
+		return true
+	},
+
+	hasIn: hasIn = (object, ...paths) => {
+		var paths = _.flattenDeep(paths.map(path => _.toPath(path)))
+		for (let key of paths) {
+			if (object[key]) {
+				object = object[key]
+			} else {
+				return false
+			}
+		}
+		return true
+	},
+
+	invert: invert = object => {
+		return Object.keys(object).reduce((res, key) => {
+			res[object[key]] = key
+			return res
+		}, {})
+	},
+
+	invertBy: invertBy = (object, iteratee) => {
+		var predicate = _.iteratee(iteratee)
+		return Object.keys(object).reduce((res, key) => {
+			if (res[predicate(object[key])]) {
+				res[predicate(object[key])].push(key)
+			} else {
+				res[predicate(object[key])] = [key]
+			}
+			return res
+		}, {})
+	},
+
+	invoke: invoke = (object, path, ...args) => {
+		paths = _.toPath(path)
+		func = paths.pop()
+		paths.forEach(key => {
+			object = object[key]
+		})
+		return object[func](...args)
+	},
+
+	keys: keys = object => {
+
+	},
+
+	keys: keys = object => Object.keys(object),
+
+	keysIn: keysIn = object => {
+		var keys = []
+		for (var key in object) {
+			keys.push(key)
+		}
+		return keys
+	},
+
+	mapKeys: mapKeys = (object, iteratee) => {
+		var predicate = _.iteratee(iteratee)
+		return Object.entries(object).reduce((res, val) => {
+			res[predicate(...val.reverse())] = _.head(val)
+			return res
+		}, {})
+	},
+
+	mapValues: mapValues = (object, iteratee) => {
+		var predicate = _.iteratee(iteratee)
+		return Object.keys(object).reduce((res, key) => {
+			var val = predicate(object[key])
+			if (val) {
+				res[key] = val
+			}
+			return res
+		}, {})
+	},
+
+	merge: merge = (object, sources) => {
+		for (var key in sources) {
+			if (object[key] === undefined) {
+				object[key] = sources[key]
+			}
+			if (_.isObject(object[key]) && _.isObject(sources[key])) {
+				merge(object[key], sources[key])
+			}
+			if (_.isArray(object[key]) && _.isArray(sources[key])) {
+				Object.keys(sources[key]).forEach(index => merge(object[key][index], sources[key][index]))
+			}
+		}
+		return object
+	},
+
+	// mergeWith: mergeWith = (object, sources, customizer) => {
+	// 	for (var key in sources) {
+			
+	// 	}
+	// 	return object
+	// },
+
+	omit: omit = (object, ...paths) => {
+		var keys = Object.keys(object)
+		return keys.reduce((res, key) => {
+			if (!_.flattenDeep(paths).includes(key)) {
+				res[key] = object[key]
+			}
+			return res
+		}, {})
+	},
+
+	omitBy: omitBy = (object, predicate) => {
+		var values = Object.entries(object)
+		return values.reduce((res, val) => {
+			if (!predicate(_.last(val))) {
+				res[_.head(val)] = _.last(val)
+			}
+			return res
+		}, {})
+	},
+
+	pick: pick = (object, ...paths) => {
+		var keys = Object.keys(object)
+		return keys.reduce((res, key) => {
+			if (_.flattenDeep(paths).includes(key)) {
+				res[key] = object[key]
+			}
+			return res
+		}, {})
+	},
+
+	pickBy: pickBy = (object, predicate) => {
+		var values = Object.entries(object)
+		return values.reduce((res, val) => {
+			if (predicate(_.last(val))) {
+				res[_.head(val)] = _.last(val)
+			}
+			return res
+		}, {})
+	},
+
+	result: result = (object, path, defaultValue) => {
+		var obj = Object.assign({}, object), flag = false
+		if (_.isArray(path)) {
+			path = path.map(it => _.toPath(it))
+		} else {
+			path = _.toPath(path)
+		}
+		path.forEach(key => {
+			obj = obj[key]
+			if (obj === undefined) {
+				flag = true
+				return
+			}
+		})
+		if (flag) return _.isFunction(defaultValue) ? defaultValue() : defaultValue
+		return _.isFunction(obj) ? obj() : obj
+	},
+
+	set: set = (object, path, value) => {
+		var path = _.flattenDeep(_.isArray(path) ? path.map(it => _.toPath(it)) : _.toPath(path))
+		var result = object
+		path.forEach((key, index) => {
+			if (object[key] === undefined) {
+				object[key] = _.isNaN(+path[index + 1]) ? {} : []
+			}
+			if (index === path.length - 1) object[key] = value
+			object = object[key]
+		})
+		return result
+	},
+
+	setWith: setWith = (object, path, value, customizer) => {
+		var path = _.isArray(path) ? path.map(it => _.toPath(it)) : _.toPath(path)
+		var result = object
+		path.forEach((key, index) => {
+			if (object[path[index + 1]] === undefined) {
+				object[key] = _.isNumber(path[index + 1]) ? [] : {}
+			}
+			if (index === path.length - 1) object[key] = customizer ? customizer(value)  : value
+			object = customizer ? customizer(object[key]) : object[key]
+		})
+		return result
+	},
+
 	isArguments: isArray = value => Object.prototype.toString.call(value) === '[object Arguments]',
 
 	isArrayLike: isArrayLike = value => {
@@ -1322,7 +1543,7 @@ var abandon599 = {
 
 	assignIn: assignIn = (...objects) => {
 		var res = {}
-		Objects.forEach(obj => {
+		objects.forEach(obj => {
 			for(var key in obj) {
 				res[key] = obj[key]
 			}
@@ -1343,6 +1564,21 @@ var abandon599 = {
 	},
 
 	defaults: defaults = (...objects) => Object.assign(...(objects.reverse())),
+
+	defaultsDeep: defaultsDeep = (object, source) => {
+		for (let key in source) {
+			if (!object[key]) {
+				object[key] = source[key]
+			} else if(_.isObject(source[key]) && _.isObject(object[key])){
+				object[key] = Object.assign(source[key], object[key])
+			}
+		}
+		return object
+	},
+
+	findKey: findKey = (object, predicate) => Object.keys(object).filter(key => _.iteratee(predicate)(object[key]))[0],
+
+	findLastKey: findLastKey = (object, predicate) => _.last(Object.keys(object).filter(key => _.iteratee(predicate)(object[key]))),
 
 	parseJson: function parseJson (Str) {
 		var jsonStr = Str
@@ -1459,6 +1695,15 @@ var abandon599 = {
 		return result
 	},
 
+	toPairsIn: function toPairs (object) {
+		var result = []
+		for (var key in object) {
+			var ele = [key, object[key]]
+			result.push(ele)
+		}
+		return result
+	},
+
 	property: function property (path) {
 		return obj => this.get(obj, path)
 
@@ -1506,6 +1751,12 @@ var abandon599 = {
 			} else {
 				return curry(func.bind(null, ...args), arity - args.length)
 			}
+		}
+	},
+
+	bind: function bind(func, ...fixedArgs) {
+		return function (...args) {
+			return func(...fixedArgs, ...args)
 		}
 	},
 
