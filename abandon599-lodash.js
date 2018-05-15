@@ -1680,6 +1680,14 @@ var abandon599 = {
 		return Object.keys(object).map(key => object[key])
 	},
 
+	valuesIn: valuesIn = (object) => {
+		var res = []
+		for (var key in object) {
+			res.push(object[key])
+		}
+		return res
+	},
+
 	camelCase: function camelCase (string) {
 		return string.toLowerCase().replace(/^[\W|_]*/, "").replace(/[\W|_]([a-zA-Z])/g, it => it.toUpperCase()).replace(/[\W|_]/g, "")
 	},
@@ -1704,11 +1712,54 @@ var abandon599 = {
 		return result
 	},
 
+	transform: transform = (object, iteratee, accumulator) => {
+		var predicate = _.iteratee(iteratee)
+		for (var [key, val] of Object.entries(object)) {
+			if (predicate(accumulator, val, key, object) === false) {
+				break
+			}
+		}
+		return accumulator
+	},
+
+	unset: unset = (object, path) => {
+		var paths = _.flattenDeep(_.isArray(path) ? path.map(it => _.toPath(it)) : _.toPath(path))
+		last = paths.pop()
+		paths.forEach((path) => {
+			object = object[path]
+		})
+		if (object !== undefined && object[last] !== undefined) {
+			return delete object[last]
+		}
+		return false
+	},
+
+	update: update = (object, path, updater) => {
+		var paths = _.flattenDeep(_.isArray(path) ? path.map(it => _.toPath(it)) : _.toPath(path))
+		var last = paths.pop()
+		var predicate = _.iteratee(updater)
+		var res = object
+		try {
+			paths.forEach(path => {
+				object = object[path]
+			})
+			object[last] = predicate(object[last])
+		} catch (e) {
+			var object = res
+			paths.push(last)
+			object = _.set(object, paths)
+			update(object, paths, updater)
+		}
+		return res
+	},
+
 	property: function property (path) {
-		return obj => this.get(obj, path)
+		return obj => _.get(obj, path)
 
 		// return obj => this.get(obj, path, "")
 	},
+
+	propertyOf: propertyOf = object => path => _.get(object, path),
 
 	concat: function concat (array, ...values) {
 		var result = []
@@ -1743,6 +1794,220 @@ var abandon599 = {
 	escapeRegExp: function escapeRegExp (string = '') {
 		return string.replace(/[\^|\$|\\|\.|\*|\+|\?|\(|\)|\[|\]|\{|\}|\|]/g, it => ('\\' + it))
 	},
+
+	kebabCase: kebabCase = string => string.replace(/^\s+|^\_+|\s+$|\_+$|^\W+|\W+$/g, '').replace(/(\_+|\W+|\s+)/g, '-').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
+
+	lowerCase: lowerCase = string => string.replace(/^\s+|^\_+|\s+$|\_+$|^\W+|\W+$|^\-+|\-+$/g, '').replace(/(\_+|\W+|\s+)/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase(),
+
+	lowerFirst: lowerFirst = string => string.replace(/^([A-Z])/, it => it.toLowerCase()),
+
+	pad: pad = (string = '', length = 0, chars = ' ') => {
+		var padLength = length - string.length
+		var padLlength = padLength / 2 | 0
+		var padRlength = Math.ceil(padLength / 2)
+		var padLeft = chars.repeat(Math.ceil(padLlength / chars.length)).slice(0, padLlength)
+		var padRight = chars.repeat(Math.ceil(padRlength / chars.length)).slice(0, padRlength)
+		return padLeft + string + padRight
+	},
+
+	padEnd: padEnd = (string = '', length = 0, chars = ' ') => {
+		var padRlength = length - string.length
+		var padRight = chars.repeat(Math.ceil(padRlength / chars.length)).slice(0, padRlength)
+		return string + padRight
+	},
+
+	padStart: padStart = (string = '', length = 0, chars = ' ') => {
+		var padLlength = length - string.length
+		var padLeft = chars.repeat(Math.ceil(padLlength / chars.length)).slice(0, padLlength)
+		return padLeft + string
+	},
+
+	parseInt: parseInt = (string, radix = 10) => Number.parseInt(string, radix),
+
+	repeat: repeat = (string = '', n = 1) => {
+		if (n <= 0) return ''
+		var str = string
+		while(--n) {
+			string += str
+		}
+		return string
+	},
+
+	replace: replace = (string = '', pattern, replacement) => {
+		res = string.split(pattern)
+		var result = res[0]
+		for (var i = 1; i < res.length; i++) {
+			result += replacement + res[i]
+		}
+		return result
+	},
+
+	snakeCase: snakeCase = (string = '') => string.replace(/^\s+|^\_+|\s+$|\_+$|^\W+|\W+$|^\-+|\-+$/g, '').replace(/(\_+|\W+|\s+)/g, '_').replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase(),
+
+	split: split = (string = '', separator, limit) => string.split(separator).slice(0, limit),
+
+	startCase: startCase = (string = '') => string.replace(/^\s+|^\_+|\s+$|\_+$|^\W+|\W+$/g, '').replace(/(\_+|\W+|\s+)/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').split(' ').map(it => it.replace(/^([a-z])/, it => it.toUpperCase())).join(' '),
+
+	startsWith: startsWith = (string = '', target, position = 0) => string[position] === target,
+
+	toLower: toLower = (string = '') => string.toLowerCase(),
+
+	toUpper: toUpper = (string = '') => string.toUpperCase(),
+
+	trim: trim = (string = '', chars =' ') => {
+		var res = []
+		for(var i = 0; i < string.length; i++) {
+			if (!chars.includes(string[i])) {
+				res.push(string[i])
+			}
+		}
+		return res.join('')
+	},
+
+	trimEnd: trimEnd = (string = '', chars = ' ') => {
+		string = string.split('').reverse()
+		for(var i = 0; i < string.length; i++) {
+			if (chars.includes(string[i])) {
+				string.splice(i, 1)
+				i--			
+			} else {
+				return string.reverse().join('')
+			}
+		}
+		return ''
+	},
+
+	trimStart: trimStart = (string = '', chars = ' ') => {
+		string = string.split('')
+		for(var i = 0; i < string.length; i++) {
+			if (chars.includes(string[i])) {
+				string.splice(i, 1)
+				i--
+			} else {
+				return string.join('')
+			}
+		}
+		return ''
+	},
+
+	truncate: truncate = (string = '', options = {}) => {
+		if (options['length'] === undefined) options['length'] = 30
+		if (options['omission'] === undefined) options['omission'] = '...'
+		if (options['separator'] === undefined) options['separator'] = ''
+		string = string.split(options['separator']).join('')
+		string = string.slice(0, options['length'] - options['omission'].length)
+		string = string + options['omission']
+		return string
+	},
+
+	unescape: unescape = (string = '') => {
+		return string.replace(/(\&[a-z]+\;)/, it => {
+			if (it == "&quot;") return '"'
+			if (it == "&amp;") return "&"
+			if (it == "&lt;") return "<"
+			if (it == "&gt;") return ">"
+			if (it == "&apos;") return "'"
+		})
+	},
+
+	upperCase: upperCase = (string = '') => string.replace(/^\s+|^\_+|\s+$|\_+$|^\W+|\W+$|^\-+|\-+$/g, '').replace(/(\_+|\W+|\s+)/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase(),
+
+	upperFirst: upperFirst = (string = '') => string.replace(/^([a-z])/, it => it.toUpperCase()),
+
+	words: words = (string = '', pattern) => pattern ? string.match(pattern) : string.split(/[^\w]+/g),
+
+	defaultTo: defaultTo = (value, defaultValue) => {
+		if (_.isNaN(value) || _.isNil(value)) return defaultValue
+		return value
+	},
+
+	range: range = (start = 0, end, step = 1) => {
+		if (end === undefined) {
+			end = start
+			start = 0
+			if (end === start) return []
+		}
+		if (step === 0) return Array(end - start).fill(start)
+		var result = []
+		while (start < end) {
+			if (step < 0) return []
+			result.push(start)
+			start += step
+		}
+		while(start > end) {
+			result.push(start)
+			start -= step > 0 ? step : -step
+		}
+		return result
+	},
+
+	rangeRight: rangeRight = (start = 0, end, step = 1) => {
+		var result = [], endL = end
+		if (endL === undefined) {
+			var endL = 0
+			if (endL === start) return []
+		}
+		if (step === 0) {
+			return endL-start > 0 ? Array(endL - start).fill(start) : []
+		}
+		while (start < endL) {
+			if (step < 0) return []
+			endL -= step
+			result.push(endL)
+		}
+		while (start > endL) {
+			endL += step > 0 ? step : -step
+			result.push(endL)
+		}
+		if (end === undefined) {
+			result.pop()
+			result.reverse()
+			result.push(0)
+		}
+		return result
+	},
+
+	conforms: conforms = source => {
+		var keys = Object.keys(source)
+		return object => {
+			return keys.every(key => {
+				if (source[key](object[key])) return true
+				return false 
+			})
+		}
+	},
+
+	constant: constant = value => () => value,
+
+	flow: flow = (...funcs) => {
+		var funcs = _.flattenDeep(funcs)
+		return (...args) => {
+			var val = funcs.shift()(...args)
+			return funcs.reduce((val, func) => func.call(null, val), val)
+		}
+	},
+
+	method: method = (path, ...args) => {
+		return object => {
+			try {
+				return _.get(object, path)(...args)
+			} catch (e) {
+				return undefined
+			}
+		}
+	},
+
+	methodOf: methodOf = (path, ...args) => {
+		return object => {
+			try {
+				return _.get(object, path)(...args)
+			} catch (e) {
+				return undefined
+			}
+		}
+	},
+
+	nthArg: nthArg = (n = 0) => (...args) => n < 0 ? args[args.length - n] :args[n],
 
 	curry: function curry (func, arity = func.length) {
 		return function (...args) {
