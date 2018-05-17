@@ -1,10 +1,4 @@
-var abandon599 = {
-	/**
-	 * [chunk description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} size  [description]
-	 * @return {[type]}       [description]
-	 */
+var trace = {
 	chunk: function chunk (array, size = 1) {
 		var result = []
 		for (i = 0; i < array.length; i += size) {
@@ -13,11 +7,7 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [compact description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
+	
 	compact: function compact (array) {
 		var result = []
 		for (i = 0; i < array.length; i++) {
@@ -28,11 +18,7 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [difference description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
+	
 	difference: function difference (array) {
 		var result = arguments[0].slice()
 		for (i = 1; i < arguments.length; i++) {
@@ -66,19 +52,9 @@ var abandon599 = {
 
 	differenceWith: differenceWith = (array, values, comparator) => array.filter(it => !values.some(val => comparator(val, it))),
 
-	/**
-	 * [drop description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} n     [description]
-	 * @return {[type]}       [description]
-	 */
+	
 	drop: drop = (array, n = 1) => array.slice(n),
-	/**
-	 * [dropRight description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} n     [description]
-	 * @return {[type]}       [description]
-	 */
+	
 	dropRight: dropRight = (array, n = 1) => array.reverse().slice(n).reverse(),
 
 	dropRightWhile: dropRightWhile = (array, predicate) => {
@@ -94,14 +70,6 @@ var abandon599 = {
 
 	dropWhile: dropWhile = (arrays, predicate) => arrays.slice(arrays.findIndex(it => !_.iteratee(predicate)(it))),
 
-	/**
-	 * [fill description]
-	 * @param  {[type]} array [description]
-	 * @param  {[type]} value [description]
-	 * @param  {Number} start [description]
-	 * @param  {[type]} end   [description]
-	 * @return {[type]}       [description]
-	 */
 	fill: function fill (array, value, start = 0, end = array.length) {
 		for (i = start; i < end; i++) {
 			array[i] = value
@@ -131,11 +99,6 @@ var abandon599 = {
 
 	head: head = (array) => array[0],
 
-	/**
-	 * [flatten description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
 	flatten: function flatten (array) {
 		// return [].concat(...array)
 		// return Array.prototype.concat.apply([], array)
@@ -153,11 +116,6 @@ var abandon599 = {
 		return result
 	},
 
-	/**	
-	 * [flattenDeep description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
 	flattenDeep: function flattenDeep (array) {
 		var result = []
 		for (var i = 0; i < array.length; i++) {
@@ -177,12 +135,6 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [flattenDepth description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} depth [description]
-	 * @return {[type]}       [description]
-	 */
 	flattenDepth: function flattenDepth (array, depth = 1) {
 		var result = []
 		for (var i = 0; i < array.length; i++) {
@@ -201,11 +153,6 @@ var abandon599 = {
 		return flattenDepth(result, depth)
 	},
 
-	/**
-	 * [fromPairs description]
-	 * @param  {[type]} pairs [description]
-	 * @return {[type]}       [description]
-	 */
 	fromPairs: function fromPairs (pairs) {
 		result = {}
 		for (i = 0; i < pairs.length; i++) {
@@ -214,13 +161,6 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [indexOf description]
-	 * @param  {[type]} array     [description]
-	 * @param  {[type]} value     [description]
-	 * @param  {Number} fromIndex [description]
-	 * @return {[type]}           [description]
-	 */
 	indexOf: function indexOf (array, value, fromIndex = 0) {
 		if (fromIndex < 0) {
 			fromIndex += array.length
@@ -233,11 +173,6 @@ var abandon599 = {
 		return -1
 	},
 
-	/**
-	 * [initial description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
 	initial: function initial (array) {
 		result = array.slice()
 		if (result.length !== 0) {
@@ -246,11 +181,6 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [intersection description]
-	 * @param  {[type]} arrays [description]
-	 * @return {[type]}        [description]
-	 */
 	intersection: function intersection (...arrays) {
 		var arr = arrays.shift()
 		return arrays.reduce((result, val) => {
@@ -288,12 +218,6 @@ var abandon599 = {
 
 
 
-	/**
-	 * [forEach description]
-	 * @param  {[type]} collection [description]
-	 * @param  {[type]} iteratee   [description]
-	 * @return {[type]}            [description]
-	 */
 	forEach: function forEach (collection, iteratee) {
 		var iteratee = _.iteratee(iteratee)
 		for (var key in collection) {
@@ -302,16 +226,6 @@ var abandon599 = {
 		return collection
 	},
 
-	// filter: function filter(collection, predicate) {
-
-
-	// },
-
-	/**
-	 * [创建一个深比较的方法来比较给定的对象和source对象，如果给定的对象拥有相同的属性值返回true，否则返回false]
-	 * @param  {[type]} source [给定的source对象]
-	 * @return {[type]}        [返回Boolean]
-	 */
 	matches: function matches (source) {
 		return function (obj) {
 			for (var val in obj) {
@@ -333,19 +247,9 @@ var abandon599 = {
 			return false
 		}
 	},
-	/**
-	 * [返回collection（集合）的长度，如果是对象返回其可以枚举的个数，如果是字符串或者数组，则返回其长度]
-	 * @param  {[type]} collection [description]
-	 * @return {[type]}            [description]
-	 */
+	
 	size: size = collection => _.isObject(collection) ? Object.keys(collection).length : collection.length,
-	/**
-	 * [使用函数来进行数据的汇总，通过一组数值，给出经过函数iteratee计算之后的值]
-	 * @param  {[type]} collection  [给定的数组或者对象]
-	 * @param  {[type]} iteratee    [需要进行计算的计算]
-	 * @param  {[type]} accumulator [计算初始值，或者对象类型]
-	 * @return {[type]}             [计算汇总之后的返回结果]
-	 */
+	
 	reduce: function reduce (collection, iteratee, accumulator = 0) {
 		var result = accumulator
 		var iteratee = _.iteratee(iteratee)
@@ -364,32 +268,18 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [flip给定函数，将数据反向调用]
-	 * @param  {[type]} func [给定的函数]
-	 * @return {[type]}      [返回反向调用之后返回的值]
-	 */
 	flip: function flip (func) {
 		return function (...args) {
 			return func(...args.reverse())
 		}
 	},
 
-	/**
-	 * [negate给定函数，返回与这个函数相反的计算结果]
-	 * @param  {[type]} predicate [给定的函数]
-	 * @return {[type]}           [description]
-	 */
 	negate: function negate (predicate) {
 		return function (...args) {
 			return !predicate(...args)
 		}
 	},
-	/**
-	 * [函数仅调用一次，第二次调用时，函数不在调用，返回第一次调用的结果]
-	 * @param  {[type]} func [once调用的函数]
-	 * @return {[type]}      [返回的结果，第二次调用也返回第一次调用的结果]
-	 */
+	
 	once: function once (func) {
 		var called = false
 		var first
@@ -409,23 +299,12 @@ var abandon599 = {
 		}
 	},
 
-	/**
-	 * [创建的函数只能接受一个参数，忽略多余的参数]
-	 * @param  {[type]} func [传入的函数]
-	 * @return {[type]}      [返回函数处理第一个参数的返回值]
-	 */
 	unary: function unary (func) {
 		return function (arg) {
 			return func(arg)
 		}
 	},
 
-	/**
-	 * [创建的一个调用的函数只能接受n个参数，忽略多余的函数]
-	 * @param  {[type]} func [创建一个调用的函数]
-	 * @param  {[type]} n    [能接受的n个函数的数量]
-	 * @return {[type]}      [返回函数接受]
-	 */
 	ary: function ary (func, n = fun.length) {
 		return function (...args) {
 			if (n < args.length) {
@@ -435,12 +314,6 @@ var abandon599 = {
 		}
 	},
 
-	/**
-	 * [times description]
-	 * @param  {[type]} n        [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	times: function times (n, iteratee) {
 		var result = []
 		for (var i = 0; i < n; i++) {
@@ -449,12 +322,6 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [join description]
-	 * @param  {[type]} array     [description]
-	 * @param  {String} separator [description]
-	 * @return {[type]}           [description]
-	 */
 	join: function join (array, separator = ".") {
 		var separator = separator.toString(),
 			result = ''
@@ -464,22 +331,10 @@ var abandon599 = {
 		return result
 	},
 
-	/**
-	 * [last description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
 	last: function last (array) {
 		return array[array.length - 1]
 	},
 
-	/**
-	 * [lastIndexOf description]
-	 * @param  {[type]} array     [description]
-	 * @param  {[type]} value     [description]
-	 * @param  {[type]} fromIndex [description]
-	 * @return {[type]}           [description]
-	 */
 	lastIndexOf: function lastIndexOf (array, value, fromIndex = array.length - 1) {
 		if (Math.abs(fromIndex) >= array.length) {
 			return -1
@@ -491,20 +346,10 @@ var abandon599 = {
 		}
 	},
 
-	/**
-	 * [nth description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} n     [description]
-	 * @return {[type]}       [description]
-	 */
+	
 	nth: nth = (array, n = 0) => n >= 0 ? array[n] : array[array.length + n],
 
-	/**
-	 * [pull description]
-	 * @param  {[type]} array   [description]
-	 * @param  {[type]} [value] [description]
-	 * @return {[type]}         [description]
-	 */
+	
 	pull: pull = (array, ...values) => array.filter(it => !values.includes(it)),
 
 	pullAll: pullAll = (array, values) => array.filter(it => !values.includes(it)),
@@ -525,10 +370,7 @@ var abandon599 = {
 		})
 		return res
 	},
-	/**
-	 * [reverse description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
+	turn {[type]}       [description]
 	 */
 	reverse: function reverse (array) {
 		var result = []
@@ -611,20 +453,9 @@ var abandon599 = {
 		}
 		return res
 	},
-	/**
-	 * [将value转化为属性路径的数组]
-	 * @param  {[type]} value [需要转换的数组]
-	 * @return {[type]}       [返回的结果]
-	 */
+	
 	toPath: toPath = (value) => value.toString().split('[').join('.').split(']').join('').split('.'),
 
-	/**
-	 * [根据object对象的path路径取值，如果value是undefined返回defaulValue的值]
-	 * @param  {[type]} object       [需要取值的对象]
-	 * @param  {[type]} path         [取值的路径]
-	 * @param  {[type]} defaultValue [当结果为undefined返回的值]
-	 * @return {[type]}              [返回值]
-	 */
 	get: function get (object, path, defaultValue) {
 		//将输入的path路径转换为数组方式
 		if (!Array.isArray(path)) path = this.toPath(path)
@@ -637,12 +468,6 @@ var abandon599 = {
 		return object
 	},
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	forIn: function forIn (object, iteratee) {
 		for (var key in object) {
 			iteratee(object[key], key, object)
@@ -650,12 +475,6 @@ var abandon599 = {
 		return object
 	},
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	forInRight: function forInRight (object, iteratee) {
 		var result = []
 		for (var val in object) {
@@ -667,12 +486,6 @@ var abandon599 = {
 		return object
 	},
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	forOwn: function forOwn (object, iteratee) {
 		for (var key in object) {
 			if (object.hasOwnProperty(key)) {
@@ -1036,59 +849,26 @@ var abandon599 = {
 
 	lte: lte = (value, other) => value <= other,
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	isArray: function isArray (value) {
 		return Object.prototype.toString.call(value) === '[object Array]'
 	},
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	isArrayBuffer: function isArray (value) {
 		return Object.prototype.toString.call(value) === '[object ArrayBuffer]'
 	},
 
-	/**
-	 * [forIn description]
-	 * @param  {[type]} object   [description]
-	 * @param  {[type]} iteratee [description]
-	 * @return {[type]}          [description]
-	 */
 	isBoolean: function isBoolean (value) {
 		return Object.prototype.toString.call(value) == '[object Boolean]'
 	},
 
-	/**
-	 * [isDate description]
-	 * @param  {[type]}  value [description]
-	 * @return {Boolean}       [description]
-	 */
 	isDate: function isDate (value) {
 		return Object.prototype.toString.call(value) === '[object Date]'
 	},
 
-	/**
-	 * [isFunction description]
-	 * @param  {[type]}  value [description]
-	 * @return {Boolean}       [description]
-	 */
 	isFunction: function isFunction (value) {
 		return Object.prototype.toString.call(value) === '[object Function]'
 	},
 
-	/**
-	 * [isString description]
-	 * @param  {[type]}  value [description]
-	 * @return {Boolean}       [description]
-	 */
 	isString: function isString (value) {
 		return Object.prototype.toString.call(value) === '[object String]'
 	},
@@ -1144,27 +924,10 @@ var abandon599 = {
 		return value
 	},
 
-	/**
-	 * [tail description]
-	 * @param  {[type]} array [description]
-	 * @return {[type]}       [description]
-	 */
 	tail: tail = array => array.slice(1),
 
-	/**
-	 * [take description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} n     [description]
-	 * @return {[type]}       [description]
-	 */
 	take: take = (array, n = 1) => array.slice(0, n),
 
-	/**
-	 * [takeRight description]
-	 * @param  {[type]} array [description]
-	 * @param  {Number} n     [description]
-	 * @return {[type]}       [description]
-	 */
 	takeRight: takeRight = (array, n = 1) => array.slice().reverse().slice(0, n).reverse(),
 
 	takeRightWhile: takeRightWhile = (array, iteratee) => {
@@ -1228,11 +991,6 @@ var abandon599 = {
 	// 	return result
 	// },
 
-	/**
-	 * [简单的JSON解析器]
-	 * @param  {[type]} Str [输入需要解析的JSON]
-	 * @return {[type]}     [输出解析的结果]
-	 */
 	uniqBy: uniqBy = (arr, iteratee) => {
 		var predicate = _.iteratee(iteratee)
 		var result = []
